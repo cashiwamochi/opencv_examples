@@ -19,3 +19,7 @@ ENDIF()
 add_subdirectory (
   Triangulation
 )
+
+add_subdirectory (
+  Version
+)

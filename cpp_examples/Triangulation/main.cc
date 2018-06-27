@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  if(true) {
+  if(false) {
     cv::Mat src;
     cv::hconcat(image1, image2, src);
     for(int i = 0; i < selected_points1.size(); i++) {
@@ -97,7 +97,7 @@ int main(int argc, char* argv[]) {
                 cv::Point2f(inlier_match_points2[i].x + image1.cols, inlier_match_points2[i].y),
                 1, 1, 0 );
     }
-    cv::imwrite("inlier_match_points.png", src);
+    cv::imwrite("inlier_matches.png", src);
   }
 
   mask.release();
@@ -130,7 +130,7 @@ int main(int argc, char* argv[]) {
                             (float)triangulation_points2[i].y),
                 1, 1, 0 );
     }
-    cv::imwrite("triangulatedPoints.png", src);
+    cv::imwrite("triangulated-points.png", src);
   }
 
   cv::Mat Rt0 = cv::Mat::eye(3, 4, CV_64FC1);
@@ -150,6 +150,46 @@ int main(int argc, char* argv[]) {
   assert(point3d_homo.cols == triangulation_points1.size());
 
   std::cout << "Map Point Num : " << point3d_homo.cols << std::endl;
+
+  std::cout << point3d_homo.size() << std::endl;
+
+#if 0
+  // OpenCV viz module Viewer
+  {
+    {
+      cv::viz::Viz3d myWindow("OpenCV-Viewer");
+      vector<cv::Vec3d> vPointPosition;
+      vPointPosition.reserve(point3d_homo.cols);
+      for(size_t c = 0; c < mvMapPoint.size(); c++) {
+        vPointPosition.push_back(cv::Vec3d(mvMapPoint[c].GetPos().x,
+                                           mvMapPoint[c].GetPos().y,
+                                           mvMapPoint[c].GetPos().z));
+      }
+
+      cv::viz::WCloud wcloud(vPointPosition, cv::viz::Color::yellow());
+      wcloud.setRenderingProperty( cv::viz::POINT_SIZE, 4 );
+      myWindow.showWidget("Viewer", wcloud);
+
+      myWindow.showWidget("Coordinate Widget", cv::viz::WCoordinateSystem(0.5));
+
+      for(size_t fid = 0; fid < mvFrame.size(); fid++) {
+        cv::Affine3d cam_pose;
+        cv::Mat R, t;
+        Frame f = mvFrame[fid];
+        f.GetPose(R,t);
+        cv::Mat T = -R.t()*t;
+        cam_pose = cv::Affine3d(R.t(), T);
+        cv::viz::WCameraPosition cpw(0.1); // Coordinate axes
+        cv::viz::WCameraPosition cpw_frustums(cv::Matx33d(mKd), /*image,*/ 0.5*4, cv::viz::Color::green()); // Camera frustum
+        string widgetPoseName = "CPW" + std::to_string(fid);
+        string widgetFrustumName = "CPW_FRUSTUM" + std::to_string(fid);
+        myWindow.showWidget(widgetPoseName, cpw, cam_pose);
+        myWindow.showWidget(widgetFrustumName, cpw_frustums, cam_pose);
+      }
+
+      myWindow.spin();
+  }
+#endif
 
   return 0;
 }
