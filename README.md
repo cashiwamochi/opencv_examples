@@ -8,11 +8,12 @@ This code generates 3d-points by 2-viewes-geometry. You can learn how to use Fin
 ### Version
 This shows your opencv version.
 
+### Panorama (Python)
+It uses findHomography(), and seamlessCone() for blening. You can try with images in "test_images" folder.
+
 ## Examples (Not Yet Implemeted)
 
 ### OpticalFlow
-
-### Panorama
 
 ### Stiching
 
