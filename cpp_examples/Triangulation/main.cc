@@ -167,7 +167,7 @@ int main(int argc, char* argv[]) {
     cv::viz::Viz3d myWindow("OpenCV-Viewer");
 
     cv::viz::WCloud wcloud(vPointPosition, cv::viz::Color::yellow());
-    wcloud.setRenderingProperty( cv::viz::POINT_SIZE, 4 );
+    wcloud.setRenderingProperty( cv::viz::POINT_SIZE, 2 );
     myWindow.showWidget("Viewer", wcloud);
 
     myWindow.showWidget("Coordinate Widget", cv::viz::WCoordinateSystem(0.3));
@@ -180,13 +180,13 @@ int main(int argc, char* argv[]) {
       t = v_camposes[i].rowRange(0,3).col(3);
       cv::Mat T = -R.t()*t;
       cam_pose = cv::Affine3d(R.t(), T);
-      cv::viz::WCameraPosition cpw_frustums(cv::Matx33d(Kd), /*image,*/ 0.5, cv::viz::Color::green()); // Camera frustum
+      cv::viz::WCameraPosition cpw_frustums(cv::Matx33d(Kd), /*image,*/ 0.4, cv::viz::Color::green()); // Camera frustum
       string widgetPoseName = "CPW" + std::to_string(i);
       string widgetFrustumName = "CPW_FRUSTUM" + std::to_string(i);
       myWindow.showWidget(widgetPoseName, cpw, cam_pose);
       myWindow.showWidget(widgetFrustumName, cpw_frustums, cam_pose);
     }
-
+    std::cout << "Press q to quit viewer." << std::endl;
     myWindow.spin();
   }
 #endif

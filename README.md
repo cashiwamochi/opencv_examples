@@ -11,6 +11,9 @@ This shows your opencv version.
 ### Panorama (Python)
 It uses findHomography(), and seamlessCone() for blening. You can try with images in "test_images" folder.
 
+### CameraCapture (Python)
+Nothing to write.
+
 ## Examples (Not Yet Implemeted)
 
 ### OpticalFlow
