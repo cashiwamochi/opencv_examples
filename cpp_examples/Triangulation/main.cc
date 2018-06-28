@@ -10,7 +10,7 @@ using namespace std;
 int main(int argc, char* argv[]) {
   if(argc != 3) {
     cout <<
-      "usage: this.out [/path/to/image1] [path/to/image2] "
+      "usage: this.out [/path/to/image1] [/path/to/image2] "
          << endl;
     return -1;
   }
@@ -20,8 +20,8 @@ int main(int argc, char* argv[]) {
 
   // Camera intristic parameter matrix
   // I did not calibration
-  cv::Mat K = (cv::Mat_<float>(3,3) <<  500.f,   0.f, image1.cols / 2.f,
-                                          0.f, 500.f, image1.rows / 2.f,
+  cv::Mat K = (cv::Mat_<float>(3,3) <<  1000.f,   0.f, image1.cols / 2.f,
+                                          0.f, 1000.f, image1.rows / 2.f,
                                           0.f,   0.f,               1.f);
 
   vector<cv::KeyPoint> kpts_vec1, kpts_vec2;
@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  if(true) {
+  if(false) {
     cv::Mat src;
     cv::hconcat(image1, image2, src);
     for(int i = 0; i < inlier_match_points1.size(); i++) {
@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
                   inlier_match_points2,
                   R, t, Kd.at<double>(0,0),
                   // cv::Point2f(0, 0),
-                  cv::Point2d(image1.cols/2., image1.rows/2.),
+                  cv::Point2d(image1.cols/2.0, image1.rows/2.0),
                   mask);
   // R,t is CV_64F not 32F
 
@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
   cv::triangulatePoints(Kd * Rt0, Kd * Rt1,
                         triangulation_points1, triangulation_points2,
                         point3d_homo);
-  //point3d_homo is 64F
+  //point3d_homo is 64F [4x3] (homogenious)
   //available input type is here
   //https://stackoverflow.com/questions/16295551/how-to-correctly-use-cvtriangulatepoints
 
@@ -151,43 +151,43 @@ int main(int argc, char* argv[]) {
 
   std::cout << "Map Point Num : " << point3d_homo.cols << std::endl;
 
-  std::cout << point3d_homo.size() << std::endl;
-
-#if 0
+#if 1
   // OpenCV viz module Viewer
   {
-    {
-      cv::viz::Viz3d myWindow("OpenCV-Viewer");
-      vector<cv::Vec3d> vPointPosition;
-      vPointPosition.reserve(point3d_homo.cols);
-      for(size_t c = 0; c < mvMapPoint.size(); c++) {
-        vPointPosition.push_back(cv::Vec3d(mvMapPoint[c].GetPos().x,
-                                           mvMapPoint[c].GetPos().y,
-                                           mvMapPoint[c].GetPos().z));
-      }
+    vector<cv::Mat> v_camposes(2);
+    v_camposes[0] = Rt0; v_camposes[1] = Rt1;
+    vector<cv::Vec3d> vPointPosition;
+    vPointPosition.reserve(point3d_homo.cols);
+    for(size_t c = 0; c < point3d_homo.cols; c++) {
+      vPointPosition.push_back(cv::Vec3d(point3d_homo.at<double>(0,c)/point3d_homo.at<double>(3,c),
+                                         point3d_homo.at<double>(1,c)/point3d_homo.at<double>(3,c),
+                                         point3d_homo.at<double>(2,c)/point3d_homo.at<double>(3,c)));
+    }
 
-      cv::viz::WCloud wcloud(vPointPosition, cv::viz::Color::yellow());
-      wcloud.setRenderingProperty( cv::viz::POINT_SIZE, 4 );
-      myWindow.showWidget("Viewer", wcloud);
+    cv::viz::Viz3d myWindow("OpenCV-Viewer");
 
-      myWindow.showWidget("Coordinate Widget", cv::viz::WCoordinateSystem(0.5));
+    cv::viz::WCloud wcloud(vPointPosition, cv::viz::Color::yellow());
+    wcloud.setRenderingProperty( cv::viz::POINT_SIZE, 4 );
+    myWindow.showWidget("Viewer", wcloud);
 
-      for(size_t fid = 0; fid < mvFrame.size(); fid++) {
-        cv::Affine3d cam_pose;
-        cv::Mat R, t;
-        Frame f = mvFrame[fid];
-        f.GetPose(R,t);
-        cv::Mat T = -R.t()*t;
-        cam_pose = cv::Affine3d(R.t(), T);
-        cv::viz::WCameraPosition cpw(0.1); // Coordinate axes
-        cv::viz::WCameraPosition cpw_frustums(cv::Matx33d(mKd), /*image,*/ 0.5*4, cv::viz::Color::green()); // Camera frustum
-        string widgetPoseName = "CPW" + std::to_string(fid);
-        string widgetFrustumName = "CPW_FRUSTUM" + std::to_string(fid);
-        myWindow.showWidget(widgetPoseName, cpw, cam_pose);
-        myWindow.showWidget(widgetFrustumName, cpw_frustums, cam_pose);
-      }
+    myWindow.showWidget("Coordinate Widget", cv::viz::WCoordinateSystem(0.3));
+    cv::viz::WCameraPosition cpw(0.3); // Coordinate axes
 
-      myWindow.spin();
+    for(size_t i = 0; i < v_camposes.size(); i++) {
+      cv::Affine3d cam_pose;
+      cv::Mat R, t;
+      R = v_camposes[i].rowRange(0,3).colRange(0,3);
+      t = v_camposes[i].rowRange(0,3).col(3);
+      cv::Mat T = -R.t()*t;
+      cam_pose = cv::Affine3d(R.t(), T);
+      cv::viz::WCameraPosition cpw_frustums(cv::Matx33d(Kd), /*image,*/ 0.5, cv::viz::Color::green()); // Camera frustum
+      string widgetPoseName = "CPW" + std::to_string(i);
+      string widgetFrustumName = "CPW_FRUSTUM" + std::to_string(i);
+      myWindow.showWidget(widgetPoseName, cpw, cam_pose);
+      myWindow.showWidget(widgetFrustumName, cpw_frustums, cam_pose);
+    }
+
+    myWindow.spin();
   }
 #endif
 
