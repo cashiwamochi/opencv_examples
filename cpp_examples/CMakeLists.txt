@@ -16,6 +16,8 @@ IF (OpenCV_FOUND)
   add_definitions(${OpenCV_DEFINITIONS})
 ENDIF()
 
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/bin)
+
 add_subdirectory (
   Triangulation
 )
