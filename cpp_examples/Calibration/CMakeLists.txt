@@ -1,9 +1,10 @@
 add_executable (
-  show_version
+  calibrate_camera
   main.cc
+  Calibration.cc
 )
 
 target_link_libraries (
-  show_version
+  calibrate_camera
   ${OpenCV_LIBS}
 )
