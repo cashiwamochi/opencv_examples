@@ -23,6 +23,14 @@ add_subdirectory (
 )
 
 add_subdirectory (
+  CamPoseEstimation
+)
+
+add_subdirectory (
+  Stitching
+)
+
+add_subdirectory (
   Triangulation
 )
 

@@ -3,8 +3,10 @@
 ## Examples (Implemented)
 
 ### CameraCalibration
+It supports pinhole and fisheye camera models and undistortion is alse performed. Of course, both of chess-board-detection and circle-pattern-detection are available.   ```datasets``` folder includes 4 image-sequences.   
 A checker-board is from https://www.mrpt.org/downloads/camera-calibration-checker-board_9x7.pdf .
-It supports pinhole and fisheye camera models and undistortion is alse performed.
+
+### Stiching
 
 ### Triangulation
 This code generates 3d-points and camera poses by 2-viewes-geometry. You can learn how to use FindEssentialMat(), recoverPose(), triangulatePoints() and so on. In addtion, I made a viewer using OpenCV-Viz-Module. You can check it too.
@@ -22,14 +24,9 @@ Nothing to write.
 
 ### OpticalFlow
 
-### Stiching
-
 ### Aruco
 
 ### Camera Pose Estimation
 
-### SfM
-
-### Calibration (Pinhole, Fisheye)
 
 ### GoodFeaturesToTrack

@@ -54,11 +54,17 @@ namespace Calib {
     }
     else {
       std::vector<cv::Mat> rvecs, tvecs;
-      cv::calibrateCamera(mvv_all_object_points, mvv_all_detected_points, m_size, mmK, mm_dist, rvecs, tvecs);
+      if(me_camera_model == Calib::PINHOLE) {
+        cv::calibrateCamera(mvv_all_object_points, mvv_all_detected_points, m_size, mmK, mm_dist, rvecs, tvecs);
+      }
+      else if(me_camera_model == Calib::FISHEYE) {
+        cv::fisheye::calibrate(mvv_all_object_points, mvv_all_detected_points, m_size, mmK, mm_dist, rvecs, tvecs);
+      }
+
       K = mmK.clone();
       d_params = mm_dist.clone();
       std::cout << "K : \n" << K << std::endl;
-      std::cout << "dist-params : " << d_params << std::endl;
+      std::cout << "dist-params : \n" << d_params << std::endl;
       mb_done = true;
     }
 
@@ -83,7 +89,13 @@ namespace Calib {
       std::vector<cv::Mat> vm_undistorted_images((int)mvm_original_images.size());
       for(int i = 0; i < (int)mvm_original_images.size(); i++) {
         cv::Mat m_undistorted_image;
-        cv::undistort(mvm_original_images[i], m_undistorted_image, mmK, mm_dist);
+        if(me_camera_model == Calib::PINHOLE) {
+          cv::undistort(mvm_original_images[i], m_undistorted_image, mmK, mm_dist);
+        }
+        else if(me_camera_model == Calib::FISHEYE) {
+          cv::fisheye::undistortImage(mvm_original_images[i], m_undistorted_image, mmK, mm_dist, mmK,mvm_processed_images[i].size());
+        }
+
         vm_undistorted_images[i] = m_undistorted_image.clone();
       }
       return vm_undistorted_images;
