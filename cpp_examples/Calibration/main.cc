@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
   if(_camera_model == "pinhole") {
     camera_model = Calib::PINHOLE;
   }
-  else if(_camera_model == "fisheey") {
+  else if(_camera_model == "fisheye") {
     camera_model = Calib::FISHEYE;
   }
   else {

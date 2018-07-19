@@ -6,8 +6,8 @@
 It supports pinhole and fisheye camera models and undistortion is also performed. Of course, both of chess-board-detection and circle-pattern-detection are available.   ```datasets``` folder includes 2 image-sequences. (Fisheye-calibration is implemented, but I didn't check this is correct.)   
 A checker-board is from https://www.mrpt.org/downloads/camera-calibration-checker-board_9x7.pdf .
 
-### Stiching
-This shows how to use cv::Sticher. This is almost same as here.(https://docs.opencv.org/master/d8/d19/tutorial_stitcher.html)
+### Stitching
+This shows how to use cv::Stitcher. This is almost same as here.(https://docs.opencv.org/master/d8/d19/tutorial_stitcher.html)
 
 ### Triangulation
 
