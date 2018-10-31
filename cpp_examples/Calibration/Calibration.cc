@@ -12,10 +12,12 @@ namespace Calib {
     }
     mb_show_process = true;
     mb_done = false;
+
   }
 
   void System::SetImages(const std::vector<cv::Mat> _vm_images) {
     mvm_original_images = _vm_images;
+    m_image_size = _vm_images[0].size();
   }
 
   // main
@@ -55,10 +57,15 @@ namespace Calib {
     else {
       std::vector<cv::Mat> rvecs, tvecs;
       if(me_camera_model == Calib::PINHOLE) {
-        cv::calibrateCamera(mvv_all_object_points, mvv_all_detected_points, m_size, mmK, mm_dist, rvecs, tvecs);
+        cv::calibrateCamera(mvv_all_object_points, mvv_all_detected_points, m_image_size, mmK, mm_dist, rvecs, tvecs);
       }
       else if(me_camera_model == Calib::FISHEYE) {
-        cv::fisheye::calibrate(mvv_all_object_points, mvv_all_detected_points, m_size, mmK, mm_dist, rvecs, tvecs);
+        int flag = 0;
+        flag |= cv::fisheye::CALIB_RECOMPUTE_EXTRINSIC;
+        //flag |= cv::fisheye::CALIB_CHECK_COND;
+        flag |= cv::fisheye::CALIB_FIX_SKEW;
+        cv::fisheye::calibrate(mvv_all_object_points, mvv_all_detected_points,
+                               m_image_size, mmK, mm_dist, cv::noArray(), cv::noArray(), flag, cv::TermCriteria(3, 20, 1e-6));
       }
 
       K = mmK.clone();
@@ -93,7 +100,7 @@ namespace Calib {
           cv::undistort(mvm_original_images[i], m_undistorted_image, mmK, mm_dist);
         }
         else if(me_camera_model == Calib::FISHEYE) {
-          cv::fisheye::undistortImage(mvm_original_images[i], m_undistorted_image, mmK, mm_dist, mmK,mvm_processed_images[i].size());
+          cv::fisheye::undistortImage(mvm_original_images[i], m_undistorted_image, mmK, mm_dist, mmK, mvm_processed_images[i].size());
         }
 
         vm_undistorted_images[i] = m_undistorted_image.clone();

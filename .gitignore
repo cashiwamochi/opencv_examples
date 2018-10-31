@@ -1,4 +1,5 @@
 build
+python_examples/CameraCapture/*.jpg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

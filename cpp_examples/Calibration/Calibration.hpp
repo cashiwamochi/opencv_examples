@@ -27,6 +27,7 @@ namespace Calib{
     std::vector<cv::Mat> mvm_original_images;
     std::vector<cv::Mat> mvm_processed_images;
     const cv::Size m_size;
+    cv::Size m_image_size;
     const PatternType me_pattern_type;
     const CameraModel me_camera_model;
     std::vector<cv::Point3f> mv_object_points;

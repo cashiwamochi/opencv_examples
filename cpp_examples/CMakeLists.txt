@@ -7,7 +7,8 @@ project(OPENCV_EXAMPLES)
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(OpenCV_DIR ~/.local/OpenCV/share/OpenCV)
+set(OpenCV_DIR ~/.local/OpenCV34/share/OpenCV)
+
 find_package(OpenCV REQUIRED)
 IF (OpenCV_FOUND)
   message([message] OpenCV_VER:${OpenCV_VERSION})
@@ -30,9 +31,11 @@ add_subdirectory (
   Stitching
 )
 
-add_subdirectory (
-  Triangulation
-)
+# failed to build in Ubuntu18
+# If you need this, add this folder or remove Viz modules
+# add_subdirectory (
+#   Triangulation
+# )
 
 add_subdirectory (
   Version

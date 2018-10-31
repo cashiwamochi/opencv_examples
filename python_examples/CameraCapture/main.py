@@ -3,7 +3,7 @@ import numpy as np
 
 if __name__ == "__main__":
     count = 0
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     while 1:
         status, frame = cap.read()
         k = cv2.waitKey(10)
