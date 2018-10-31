@@ -3,7 +3,7 @@
 ## Examples (Implemented)
 
 ### CameraCalibration
-It supports pinhole and fisheye camera models and undistortion is also performed. Of course, both of chess-board-detection and circle-pattern-detection are available.   ```datasets``` folder includes 2 image-sequences. (Fisheye-calibration is implemented, but I didn't check this is correct.)   
+It supports pinhole and fisheye camera models and undistortion is also performed. Of course, both of chess-board-detection and circle-pattern-detection are available.   ```datasets``` folder includes 2 image-sequences.  Fisheye-calibration also works.
 A checker-board is from https://www.mrpt.org/downloads/camera-calibration-checker-board_9x7.pdf .
 
 ### Stitching
