@@ -23,14 +23,3 @@ It uses findHomography(), and seamlessCone() for blening. You can try with image
 
 ### CameraCapture (Python)
 Nothing to write.
-
-## Examples (Not Yet Implemeted)
-
-### OpticalFlow
-
-### Aruco
-
-### Camera Pose Estimation
-
-
-### GoodFeaturesToTrack
